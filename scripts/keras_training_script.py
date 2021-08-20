@@ -21,6 +21,7 @@ def none_or_int(value):
         return None
     return int(value)
 
+
 if __name__ == "__main__":
     
     # Interface ----
@@ -87,3 +88,4 @@ if __name__ == "__main__":
                                                                 allow_abs_path_folder_generation = True)
 
     my_model_trainer.train_model(save_history = train_config['save_history'])
+    
