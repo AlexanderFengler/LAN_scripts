@@ -12,12 +12,12 @@
 #SBATCH --output /users/afengler/batch_job_out/lanfactory_trainer_%A_%a.out
 
 # Request runtime, memory, cores
-#SBATCH --time=32:00:00
+#SBATCH --time=18:00:00
 #SBATCH --mem=32G
 #SBATCH -c 10
 #SBATCH -N 1
 #SBATCH -p gpu --gres=gpu:1
-#SBATCH --array=0-89 # should be 89
+#SBATCH --array=0-8 # should be 89
 
 # --------------------------------------------------------------------------------------
 
