@@ -59,6 +59,3 @@ python -u scripts/data_generation_script.py --config_file $config_file #\
                                                 #--config_dict_key $SLURM_ARRAY_TASK_ID
 #fi
 
-# CONFIG DICT KEY DEPENDS ON ARRAY ID
-# python -u data_generation_script.py --config_file $config_file \
-#                                     --config_dict_key $SLURM_ARRAY_TASK_ID
