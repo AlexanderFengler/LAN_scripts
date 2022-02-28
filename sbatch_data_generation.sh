@@ -12,12 +12,12 @@
 #SBATCH --output /users/afengler/batch_job_out/data_generator_%A_%a.out
 
 # Request runtime, memory, cores
-#SBATCH --time=8:00:00
-#SBATCH --mem=16G
+#SBATCH --time=40:00:00
+#SBATCH --mem=24G
 #SBATCH -c 12
 #SBATCH -N 1
 ##SBATCH --array=1-300  # DO THIS FOR TRAINING DATA GENERATION
-#SBATCH --array=1-500
+#SBATCH --array=1-100
 
 # --------------------------------------------------------------------------------------
 

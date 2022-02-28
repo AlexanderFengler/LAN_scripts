@@ -25,7 +25,7 @@
 # source /users/afengler/.bashrc # YOUR .bashrc FILE
 conda deactivate
 conda deactivate
-conda activate lanfactory
+# conda activate lanfactory 
 
 # Read in arguments:
 # AF-TODO: Add new argument --use_array_id
