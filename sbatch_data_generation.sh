@@ -9,7 +9,7 @@
 #SBATCH --account=carney-frankmj-condo
 
 # output file
-#SBATCH --output /users/afengler/batch_job_out/data_generator_%A_%a.out
+#SBATCH --output slurm_data_generator_%A_%a.out
 
 # Request runtime, memory, cores
 #SBATCH --time=40:00:00
@@ -17,6 +17,8 @@
 #SBATCH -c 12
 #SBATCH -N 1
 ##SBATCH --array=1-300  # DO THIS FOR TRAINING DATA GENERATION
+##SBATCH -p gpu --gres=gpu:1
+##SBATCH --array=1-100
 #SBATCH --array=1-100
 
 # --------------------------------------------------------------------------------------
@@ -58,4 +60,3 @@ python -u scripts/data_generation_script.py --config_file $config_file #\
 #python -u scripts/data_generation_script.py --config_file $config_file #\
                                                 #--config_dict_key $SLURM_ARRAY_TASK_ID
 #fi
-

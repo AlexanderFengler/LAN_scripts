@@ -9,15 +9,15 @@
 #SBATCH --account=carney-frankmj-condo
 
 # output file
-#SBATCH --output /users/afengler/batch_job_out/lanfactory_trainer_%A_%a.out
+#SBATCH --output slurm_model_trainer_%A_%a.out
 
 # Request runtime, memory, cores
 #SBATCH --time=18:00:00
 #SBATCH --mem=32G
-#SBATCH -c 10
+#SBATCH -c 8
 #SBATCH -N 1
-#SBATCH -p gpu --gres=gpu:1
-SBATCH --array=0-8 # should be 89
+##SBATCH -p gpu --gres=gpu:1
+##SBATCH --array=0-8 # should be 89
 
 # --------------------------------------------------------------------------------------
 
@@ -37,6 +37,7 @@ config_file=None
 output_folder=/users/afengler/data/proj_lan_pipeline/LAN_scripts/data/
 n_networks=2
 dl_backend=torch
+#gpu=1
 
 while [ ! $# -eq 0 ]
     do
@@ -105,7 +106,7 @@ else
             then
                 python -u scripts/torch_training_script.py --config_file $config_file \
                                                            --config_dict_key $SLURM_ARRAY_TASK_ID \
-                                                           --output_folder $output_folder  
+                                                           --output_folder $output_folder
             fi
         done
 fi
