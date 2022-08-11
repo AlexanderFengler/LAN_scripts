@@ -6,10 +6,10 @@
 #SBATCH -J data_generator
 
 # priority
-#SBATCH --account=carney-frankmj-condo
+##SBATCH --account=carney-frankmj-condo
 
 # output file
-#SBATCH --output slurm_data_generator_%A_%a.out
+#SBATCH --output slurm/slurm_data_generator_%A_%a.out
 
 # Request runtime, memory, cores
 #SBATCH --time=40:00:00

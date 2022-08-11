@@ -1,6 +1,7 @@
 # AF-ADDITIONS
 data/
 data_alt/
+slurm/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

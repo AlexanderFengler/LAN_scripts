@@ -83,6 +83,13 @@ if __name__ == "__main__":
           batch_size = train_config['gpu_batch_size']
     else:
           batch_size = train_config['cpu_batch_size']
+            
+    
+    print('CUDA devices: ')
+    print(torch.cuda.device_count())
+    
+    print('BATCH SIZE CHOSEN: ')
+    print(batch_size)
     
     # Make the dataloaders
     my_train_dataset = lanfactory.trainers.DatasetTorch(file_IDs = valid_file_list[:val_idx_cutoff], #train_config['training_files'],

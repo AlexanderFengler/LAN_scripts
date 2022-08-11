@@ -9,7 +9,7 @@
 #SBATCH --account=carney-frankmj-condo
 
 # output file
-#SBATCH --output slurm_model_trainer_%A_%a.out
+#SBATCH --output slurm/slurm_model_trainer_%A_%a.out
 
 # Request runtime, memory, cores
 #SBATCH --time=18:00:00
@@ -25,6 +25,7 @@
 source /users/afengler/.bashrc
 module load cudnn/8.1.0
 module load cuda/11.1.1
+#module load cuda/11.3.1
 module load gcc/10.2
 
 conda deactivate
@@ -39,13 +40,17 @@ n_networks=2
 dl_backend=torch
 #gpu=1
 
+echo "arguments passed to sbatch_network_training.sh $#"
+
 while [ ! $# -eq 0 ]
     do
         case "$1" in
             --config_file | -c)
+                echo "passing config file $2"
                 config_file=$2
                 ;;
             --output_folder | -o)
+                echo "passing output_folder $2"
                 output_folder=$2
                 ;;
             --n_networks | -n)

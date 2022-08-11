@@ -9,7 +9,7 @@
 #SBATCH --account=carney-frankmj-condo
 
 # output file
-#SBATCH --output slurm_param_recov_postprocess.out
+#SBATCH --output slurm/slurm_param_recov_postprocess.out
 
 # Request runtime, memory, cores
 #SBATCH --time=4:00:00

@@ -172,9 +172,11 @@ class central_configurator():
         self.param_recov_n_chains = param_recov_n_chains
 
         # Other metadata
-        assert model in hddm.model_config.model_config.keys(), 'Invalid model choice for parameter recovery study'
-
-        self.param_recov_model_config =  deepcopy(hddm.model_config.model_config[model]) # load from
+        if model in hddm.model_config.model_config.keys(): # , 'Invalid model choice for parameter recovery study'
+            self.param_recov_model_config =  deepcopy(hddm.model_config.model_config[model])
+        # self.param_recov_model_config =  deepcopy(hddm.model_config.model_config[model]) # load from
+        else:
+            print('Model is not part of hddm --> no parameter recovery study possible')
 
     def _make_data_generator_configs(self):
         print('Making generator config')
