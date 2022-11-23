@@ -13,13 +13,13 @@
 
 # Request runtime, memory, cores
 #SBATCH --time=40:00:00
-#SBATCH --mem=24G
+#SBATCH --mem=16G
 #SBATCH -c 12
 #SBATCH -N 1
 ##SBATCH --array=1-300  # DO THIS FOR TRAINING DATA GENERATION
 ##SBATCH -p gpu --gres=gpu:1
 ##SBATCH --array=1-100
-#SBATCH --array=1-100
+##SBATCH --array=1-100
 
 # --------------------------------------------------------------------------------------
 
@@ -30,7 +30,6 @@ conda deactivate
 conda activate lanfactory
 
 # Read in arguments:
-# AF-TODO: Add new argument --use_array_id
 config_dict_key=None
 config_file=None
 
@@ -48,15 +47,5 @@ while [ ! $# -eq 0 ]
     done
 
 echo "The config file supplied is: $config_file"
-echo "The config dictionary key supplied is: $config_dict_key"
 
-
-#x='teststr' # defined only for the check below (testing whether SLURM_ARRAY_TASK_ID is set)
-#if [ -z ${SLURM_ARRAY_TASK_ID} ];
-#then
-python -u scripts/data_generation_script.py --config_file $config_file #\
-                                                #--config_dict_key $config_dict_key
-#else
-#python -u scripts/data_generation_script.py --config_file $config_file #\
-                                                #--config_dict_key $SLURM_ARRAY_TASK_ID
-#fi
+python -u scripts/data_generation_script.py --config_file $config_file

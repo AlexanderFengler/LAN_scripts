@@ -68,7 +68,7 @@ if __name__ == "__main__":
     
     file_list = os.listdir(config_dict['training_data_folder'])
     valid_file_list = np.array([config_dict['training_data_folder'] + '/' + \
-                         file_ for file_ in file_list if config_dict['training_file_identifier'] in file_])
+                         file_ for file_ in file_list])
     random.shuffle(valid_file_list)
     n_training_files = min(len(valid_file_list), train_config['n_training_files'])
     val_idx_cutoff = int(config_dict['train_val_split'] * n_training_files)
@@ -84,7 +84,6 @@ if __name__ == "__main__":
     else:
           batch_size = train_config['cpu_batch_size']
             
-    
     print('CUDA devices: ')
     print(torch.cuda.device_count())
     
@@ -94,7 +93,13 @@ if __name__ == "__main__":
     # Make the dataloaders
     my_train_dataset = lanfactory.trainers.DatasetTorch(file_IDs = valid_file_list[:val_idx_cutoff], #train_config['training_files'],
                                                         batch_size = batch_size,
-                                                        label_prelog_cutoff_low = train_config['label_prelog_cutoff_low'])
+                                                        label_prelog_cutoff_low = train_config['label_prelog_cutoff_low'],
+                                                        label_prelog_cutoff_high = train_config['label_prelog_cutoff_high'],
+                                                        label_simple_upper_bound = train_config['label_simple_upper_bound'],
+                                                        label_simple_lower_bound = train_config['label_simple_lower_bound'],
+                                                        features_key = train_config['features_key'],
+                                                        label_key = train_config['label_key'],
+                                                        )
     
     my_dataloader_train = torch.utils.data.DataLoader(my_train_dataset,
                                                       shuffle = train_config['shuffle_files'],
@@ -104,7 +109,13 @@ if __name__ == "__main__":
     
     my_val_dataset = lanfactory.trainers.DatasetTorch(file_IDs = valid_file_list[val_idx_cutoff:], #train_config['validation_files'],
                                                       batch_size = batch_size,
-                                                      label_prelog_cutoff_low = train_config['label_prelog_cutoff_low'])
+                                                      label_prelog_cutoff_low = train_config['label_prelog_cutoff_low'],
+                                                      label_prelog_cutoff_high = train_config['label_prelog_cutoff_high'],
+                                                      label_simple_upper_bound = train_config['label_simple_upper_bound'],
+                                                      label_simple_lower_bound = train_config['label_simple_lower_bound'],
+                                                      features_key = train_config['features_key'],
+                                                      label_key = train_config['label_key']
+                                                      )
     
     my_dataloader_val = torch.utils.data.DataLoader(my_val_dataset,
                                                     shuffle = train_config['shuffle_files'],
@@ -116,11 +127,12 @@ if __name__ == "__main__":
     net = lanfactory.trainers.TorchMLP(network_config = deepcopy(network_config),
                                        input_shape = my_train_dataset.input_dim,
                                        save_folder = args.output_folder,
-                                       generative_model_id = network_config['model_id'])
+                                       generative_model_id = network_config['model_id'],
+                                       train_output_type = network_config['train_output_type'])
 
     # Save configs with model_id attached
-    lanfactory.utils.save_configs(model_id = net.model_id + '_torch_',
-                                  save_folder = args.output_folder + '/' + network_config['model_id'] + '/', 
+    lanfactory.utils.save_configs(model_id = net.model_id,
+                                  save_folder = args.output_folder + '/', 
                                   network_config = network_config, 
                                   train_config = train_config, 
                                   allow_abs_path_folder_generation = True)

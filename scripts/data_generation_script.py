@@ -50,9 +50,7 @@ if __name__ == "__main__":
     print(config['model_config'])
     
     # Make the generator
-    
     print('Now generating data')
-    
     my_dataset_generator = ssms.dataset_generators.data_generator(generator_config = config['data_config'],
                                                                   model_config = config['model_config'])
 

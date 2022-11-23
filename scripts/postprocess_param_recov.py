@@ -113,10 +113,15 @@ def make_network_df(path = None,
         for file_ in os.listdir(path):
             if m_id in file_ and 'network_config' in file_:
                 network_config_tmp = pickle.load(open(path + '/' + file_, 'rb'))
-                #print(network_config_tmp)
+                # print(network_config_tmp)
                 pds[m_id]['n_hidden_layers'] = len(network_config_tmp['layer_sizes']) - 1
                 pds[m_id]['size_hidden_layers'] = network_config_tmp['layer_sizes'][0]
-
+                pds[m_id]['train_output_type'] = network_config_tmp['train_output_type']
+                #pds[m_id]['
+            if m_id in file_ and 'train_config' in file_:
+                train_config_tmp = pickle.load(open(path + '/' + file_, 'rb'))
+                pds[m_id]['weight_decay'] = train_config_tmp['weight_decay']
+            
     # Turn the model_id wise dictionary into dataframe
     training_dat = pd.concat([pds[m_id] for m_id in pds.keys()]).reset_index(drop = True)
 

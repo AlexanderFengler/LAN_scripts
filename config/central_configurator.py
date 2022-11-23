@@ -22,7 +22,8 @@ import tensorflow
 import torch
 
 import pandas as pd
-#import model_performance_utils
+
+import pickle
 
 class central_configurator():
     def __init__(self,
@@ -184,7 +185,6 @@ class central_configurator():
         print('save folder: ', self.config_save_folder)
         make_data_generator_configs(model = self.model,
                                     generator_approach = self.data_gen_approach,
-                                    generator_network_type = self.data_gen_network_type,
                                     data_generator_arg_dict = self.data_gen_arg_dict,
                                     model_config_arg_dict = self.data_gen_model_config_arg_dict,
                                     save_name = self.data_gen_config_save_name,
@@ -294,14 +294,16 @@ class central_configurator():
     
 def make_data_generator_configs(model = 'ddm',
                                 generator_approach = 'lan',
-                                generator_network_type = 'mlp',
                                 data_generator_arg_dict = None,
                                 model_config_arg_dict = None,
                                 save_name = None,
                                 save_folder = ''):
     
+    # Load copy of the respective model's config dict from ssms
     model_config = deepcopy(ssms.config.model_config[model])
-    data_config = deepcopy(ssms.config.data_generator_config[generator_approach])[generator_network_type]
+    
+    # Load copy of the respective data_generator_config dicts 
+    data_config = deepcopy(ssms.config.data_generator_config[generator_approach])
     data_config['dgp_list'] = model
     
     for key, val in data_generator_arg_dict.items():
@@ -311,6 +313,7 @@ def make_data_generator_configs(model = 'ddm',
         model_config[key] = val
 
     config_dict = {'model_config': model_config, 'data_config': data_config}
+    
     if save_name is not None:
         if len(save_folder) > 0:
             
@@ -332,13 +335,13 @@ def make_data_generator_configs(model = 'ddm',
     return config_dict
     
 def make_train_network_configs(training_data_folder = None,
-                               training_file_identifier = None,
                                train_val_split = 0.9, 
                                save_folder = '',
                                network_arg_dict = None,
                                train_arg_dict = None,
                                save_name = None):
     
+    # Load 
     train_config = deepcopy(lanfactory.config.train_config_mlp)
     network_config = deepcopy(lanfactory.config.network_config_mlp)
     
@@ -351,7 +354,6 @@ def make_train_network_configs(training_data_folder = None,
     config_dict = {'network_config': network_config,
                    'train_config': train_config,
                    'training_data_folder': training_data_folder,
-                   'training_file_identifier': training_file_identifier,
                    'train_val_split': train_val_split}
     
     if save_name is not None:
@@ -363,9 +365,12 @@ def make_train_network_configs(training_data_folder = None,
                 save_folder = save_folder + '/'
         
         # Create save_folder if not already there
-        lanfactory.utils.try_gen_folder(folder = save_folder, allow_abs_path_folder_generation = True)
+        lanfactory.utils.try_gen_folder(folder = save_folder, 
+                                        allow_abs_path_folder_generation = True)
              
         # Dump pickle file
+        print(config_dict)
+        
         pickle.dump(config_dict, open(save_folder + save_name, 'wb'))
     return config_dict
         

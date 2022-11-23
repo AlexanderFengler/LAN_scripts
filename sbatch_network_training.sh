@@ -6,7 +6,7 @@
 #SBATCH -J model_trainer
 
 # priority
-#SBATCH --account=carney-frankmj-condo
+##SBATCH --account=carney-frankmj-condo
 
 # output file
 #SBATCH --output slurm/slurm_model_trainer_%A_%a.out
@@ -37,7 +37,7 @@ config_dict_key=None
 config_file=None
 output_folder=/users/afengler/data/proj_lan_pipeline/LAN_scripts/data/
 n_networks=2
-dl_backend=torch
+#dl_backend=torch
 #gpu=1
 
 echo "arguments passed to sbatch_network_training.sh $#"
@@ -67,16 +67,9 @@ while [ ! $# -eq 0 ]
 echo "The config file supplied is: $config_file"
 echo "The config dictionary key supplied is: $config_dict_key"
 
-if [[ $dl_backend == 'keras' ]];
-then 
-    output_folder="${output_folder}keras_models/"
-elif [[ $dl_backend == 'torch' ]];
-then 
-    output_folder="${output_folder}torch_models/"
-fi
+#output_folder="${output_folder}torch_models/"
 
 echo "Output folder is: $output_folder"
-
 
 x='teststr' # defined only for the check below (testing whether SLURM_ARRAY_TASK_ID is set)
 if [ -z ${SLURM_ARRAY_TASK_ID} ];
@@ -85,33 +78,17 @@ then
         do
             echo "NOW TRAINING NETWORK: $i of $n_networks"
             echo "No array ID"
-            if [[ $dl_backend == 'keras' ]];
-            then
-                python -u scripts/keras_training_script.py --config_file $config_file \
-                                                           --config_dict_key $config_dict_key \
-                                                           --output_folder $output_folder
-            elif [[ $dl_backend == 'torch' ]];
-            then
-                python -u scripts/torch_training_script.py --config_file $config_file \
-                                                           --config_dict_key $config_dict_key \
-                                                           --output_folder $output_folder
-            fi
+            python -u scripts/torch_training_script.py --config_file $config_file \
+                                                       --config_dict_key $config_dict_key \
+                                                       --output_folder $output_folder
         done
 else
     for ((i = 1; i <= $n_networks; i++))
         do
             echo "NOW TRAINING NETWORK: $i of $n_networks "
             echo "Array ID $SLURM_ARRAY_TASK_ID "
-            if [[ $dl_backend == 'keras' ]];
-            then
-                python -u scripts/keras_training_script.py --config_file $config_file \
-                                                           --config_dict_key $SLURM_ARRAY_TASK_ID \
-                                                           --output_folder $output_folder
-            elif [[ $dl_backend == 'torch' ]];
-            then
-                python -u scripts/torch_training_script.py --config_file $config_file \
-                                                           --config_dict_key $SLURM_ARRAY_TASK_ID \
-                                                           --output_folder $output_folder
-            fi
+            python -u scripts/torch_training_script.py --config_file $config_file \
+                                                       --config_dict_key $SLURM_ARRAY_TASK_ID \
+                                                       --output_folder $output_folder
         done
 fi

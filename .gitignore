@@ -2,6 +2,8 @@
 data/
 data_alt/
 slurm/
+wandb/
+users
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

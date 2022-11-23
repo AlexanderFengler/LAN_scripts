@@ -45,6 +45,8 @@ from torch.distributions import constraints
 from torch.distributions.exp_family import ExponentialFamily
 from torch.distributions.utils import _standard_normal, broadcast_all
 
+from time import time
+
 def sim_wrap(theta = torch.zeros(0), model = 'ddm'):
     theta = theta.numpy().astype(np.float32)
     out = ssms.basic_simulators.simulator(theta = theta,
@@ -308,6 +310,7 @@ if __name__ == "__main__":
                                          'ddm_torch_state_dict.pt', 
                               map_location=torch.device('cpu')))
 
+    # Turn torch network usable for us
     custom_torch_net = CustomTorchMLPMod(torch_net.state_dict(), 
                                          network_config)
     custom_torch_net.eval()
@@ -375,7 +378,7 @@ if __name__ == "__main__":
                        #jit_compile = True,
                        #ignore_jit_warnings = True)
                        #max_tree_depth = 1)
-
+    
     mcmc = MCMC(nuts_kernel, 
                 num_samples = 100, 
                 warmup_steps = 100, 
@@ -394,5 +397,20 @@ if __name__ == "__main__":
                                   't_subj': torch.tensor(param_dict['t_subj']).repeat(num_chains, 1),
                                   }
                )
+    
+
+    start_t = time()
     mcmc.run(n_subjects, n_samples_by_subject, data)
-    hmc_samples = {k: v.detach().cpu().numpy() for k, v in mcmc.get_samples().items()}
+    end_t = time()
+    
+    # Make arviz data
+    az_mcmc = az.from_pyro(mcmc)
+    az_mcmc.posterior.attrs['runtime'] = end_t - start_t
+    
+    # Save arviz data:
+    my_uuid = uuid.uuid1().hex
+    pickle.dump(az_mcmc, 
+                open('/users/afengler/data/proj_lan_varinf/LAN_varinf/data/parameter_recovery/pyro_mcmc_' + my_uuid, 'wb'), 
+                protocol = 3) 
+    
+    print('DONE')
