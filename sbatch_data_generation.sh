@@ -16,9 +16,7 @@
 #SBATCH --mem=16G
 #SBATCH -c 12
 #SBATCH -N 1
-##SBATCH --array=1-300  # DO THIS FOR TRAINING DATA GENERATION
 ##SBATCH -p gpu --gres=gpu:1
-##SBATCH --array=1-100
 ##SBATCH --array=1-100
 
 # --------------------------------------------------------------------------------------
@@ -27,7 +25,7 @@
 source /users/afengler/.bashrc
 conda deactivate
 conda deactivate
-conda activate lanfactory
+conda activate lan_pipe
 
 # Read in arguments:
 config_dict_key=None

@@ -51,10 +51,14 @@ if __name__ == "__main__":
     
     # Make the generator
     print('Now generating data')
-    my_dataset_generator = ssms.dataset_generators.data_generator(generator_config = config['data_config'],
-                                                                  model_config = config['model_config'])
-
-    x = my_dataset_generator.generate_data_training_uniform(save = True)
+    my_dataset_generator = ssms.dataset_generators.lan_mlp.data_generator(generator_config = config['data_config'],
+                                                                          model_config = config['model_config'])
+    if 'cpn_only' in config['data_config'].keys():
+        if config['data_config']['cpn_only']:
+            x = my_dataset_generator.generate_data_training_uniform(save = True, cpn_only = True)
+        else:
+            x = my_dataset_generator.generate_data_training_uniform(save = True, cpn_only = False)
+    else: # This is here for compatibility with legacy pipeline
+        x = my_dataset_generator.generate_data_training_uniform(save = True)
 
     print('Data generation finished')
-    

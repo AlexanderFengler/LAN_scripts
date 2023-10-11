@@ -9,16 +9,10 @@ import lanfactory
 print('importing ssms')
 import ssms
 
-print('importing hddm')
-import hddm
-
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from config import *
 from config import model_performance_utils
 
-from hddm.simulators.hddm_dataset_generators import simulator_h_c
-
-import tensorflow
 import torch
 
 import pandas as pd
@@ -173,11 +167,10 @@ class central_configurator():
         self.param_recov_n_chains = param_recov_n_chains
 
         # Other metadata
-        if model in hddm.model_config.model_config.keys(): # , 'Invalid model choice for parameter recovery study'
-            self.param_recov_model_config =  deepcopy(hddm.model_config.model_config[model])
-        # self.param_recov_model_config =  deepcopy(hddm.model_config.model_config[model]) # load from
+        if model in ssms.config.model_config.keys(): # , 'Invalid model choice for parameter recovery study'
+            self.param_recov_model_config =  deepcopy(ssms.config.model_config[model])
         else:
-            print('Model is not part of hddm --> no parameter recovery study possible')
+            print('Model is not part of ssm-simulators package --> no parameter recovery study possible')
 
     def _make_data_generator_configs(self):
         print('Making generator config')
@@ -329,10 +322,11 @@ def make_data_generator_configs(model = 'ddm',
         # Dump pickle file
         pickle.dump(config_dict, open(save_folder + save_name, 'wb'))
         
-    print('Saved to: ')
-    print(save_folder + save_name)
+        print('Saved to: ')
+        print(save_folder + save_name)
     
-    return config_dict
+    return {'config_dict':config_dict, 
+            'config_file_name': None if save_name is None else save_folder + save_name}
     
 def make_train_network_configs(training_data_folder = None,
                                train_val_split = 0.9, 
@@ -369,10 +363,13 @@ def make_train_network_configs(training_data_folder = None,
                                         allow_abs_path_folder_generation = True)
              
         # Dump pickle file
-        print(config_dict)
+        print('Saved to: ')
+        print(save_folder + save_name)
         
         pickle.dump(config_dict, open(save_folder + save_name, 'wb'))
-    return config_dict
+    
+    return {'config_dict': config_dict, 
+            'config_file_name': None if save_name is None else save_folder + save_name}
         
 def make_param_recovery_configs(model_name = 'ddm',
                                 parameter_recovery_data_loc = '',
